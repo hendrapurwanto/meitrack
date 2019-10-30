@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_ckb" pageWidth="2552" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="2512" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="ad788a6a-a9e5-409e-a6bd-ee8535792160">
+	<property name="ireport.zoom" value="1.7715610000000057"/>
+	<property name="ireport.x" value="1312"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Coloumn Header" mode="Opaque" forecolor="#000000" backcolor="#CCCCCC" pattern="" isBold="true">
+		<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+	</style>
+	<style name="Coloumn Detail" mode="Transparent" forecolor="#000000" backcolor="#000000" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+	</style>
+	<subDataset name="Dataset Chart Line" uuid="47dbbe9c-a478-486e-a7b3-7d792f5292c6">
+		<parameter name="machineId" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="startDate" class="java.util.Date">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+		</parameter>
+		<parameter name="endDate" class="java.util.Date"/>
+		<parameter name="period" class="java.lang.String">
+			<parameterDescription><![CDATA[0 : daily
+1 : weekly
+2 : monthly]]></parameterDescription>
+			<defaultValueExpression><![CDATA[$P{period}]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[select plat_number, fuel_consumption, engine_hours, time, hour, day,
+case when $P{period}='0' then hour else day end
+as category_chart from monstrack.summary_report_view
+WHERE $X{IN, machine_id, machineId} and terminal_time >= $P{startDate} and terminal_time <= $P{endDate}]]>
+		</queryString>
+		<field name="plat_number" class="java.lang.String"/>
+		<field name="fuel_consumption" class="java.lang.Float"/>
+		<field name="engine_hours" class="java.lang.Float"/>
+		<field name="time" class="java.lang.String"/>
+		<field name="hour" class="java.lang.String"/>
+		<field name="day" class="java.lang.String"/>
+		<field name="category_chart" class="java.lang.String"/>
+		<group name="plat_number">
+			<groupExpression><![CDATA[$F{plat_number}]]></groupExpression>
+		</group>
+		<group name="time">
+			<groupExpression><![CDATA[$F{time}]]></groupExpression>
+		</group>
+	</subDataset>
+	<parameter name="startDate" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="endDate" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select*from data_report_ckb_v2($P{startDate}, $P{endDate})]]>
+	</queryString>
+	<field name="imei" class="java.lang.Long"/>
+	<field name="plate" class="java.lang.String"/>
+	<field name="vehicle_type" class="java.lang.String"/>
+	<field name="area" class="java.lang.String"/>
+	<field name="driver" class="java.lang.String"/>
+	<field name="event" class="java.lang.Integer"/>
+	<field name="trip_from" class="java.lang.String"/>
+	<field name="trip_to" class="java.lang.String"/>
+	<field name="start_trip" class="java.lang.String"/>
+	<field name="end_trip" class="java.lang.String"/>
+	<field name="duration" class="java.lang.String"/>
+	<field name="distance" class="java.lang.String"/>
+	<field name="last_odometer" class="java.math.BigDecimal"/>
+	<field name="max_speed" class="java.math.BigDecimal"/>
+	<field name="avg_speed" class="java.math.BigDecimal"/>
+	<field name="ndp" class="java.lang.Long"/>
+	<field name="fatigue" class="java.lang.Long"/>
+	<field name="overspeed" class="java.lang.Long"/>
+	<field name="log_start" class="java.lang.Integer"/>
+	<field name="log_end" class="java.lang.Integer"/>
+	<variable name="today" class="java.util.Date">
+		<initialValueExpression><![CDATA[new Date()]]></initialValueExpression>
+	</variable>
+	<variable name="labelStartDate" class="java.lang.String">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[new SimpleDateFormat("dd MMM yyyy").format($P{startDate})]]></initialValueExpression>
+	</variable>
+	<variable name="labelEndDate" class="java.lang.String">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[new SimpleDateFormat("dd MMM yyyy").format($P{endDate})]]></initialValueExpression>
+	</variable>
+	<variable name="total_score" class="java.lang.Integer" resetType="Column" incrementType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{ndp}+$F{fatigue}+$F{overspeed}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="2511" height="22" uuid="5159f91b-2f5d-4e7c-a3d8-4073c0689845"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Report CKB "+$V{labelStartDate}+" - "+$V{labelEndDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement style="Coloumn Header" x="0" y="0" width="30" height="32" backcolor="#69BD56" uuid="6d01897d-a225-405e-bcca-e8009e3ce587"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" mode="Opaque" x="30" y="0" width="130" height="32" backcolor="#69BD56" uuid="6747f2d9-ab29-40b5-898e-bbd097394aed"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vehicle Plate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="430" y="0" width="130" height="32" backcolor="#69BD56" uuid="ef4c1b4a-1a6a-4585-a26b-2d2edd004641"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Driver Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="160" y="0" width="130" height="32" backcolor="#69BD56" uuid="a3047c44-7fba-4e5f-9ef4-f9af4a87225a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vehicle Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="560" y="0" width="130" height="32" backcolor="#69BD56" uuid="cb430479-86da-4fc8-95f3-0bd150c7e5c7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address Trip From]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="690" y="0" width="130" height="32" backcolor="#69BD56" uuid="01f55896-80d6-4bc1-b498-f10b579d000b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Start Trip (Date & Time)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="950" y="0" width="130" height="32" backcolor="#69BD56" uuid="c75a6cf4-8250-4bbd-a5b1-6080d82105f4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[End Trip (Date & Time)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1080" y="0" width="130" height="32" backcolor="#69BD56" uuid="c9ac8c7f-17b1-449c-ac4b-8256d49a4dd0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Trip Duration]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1210" y="0" width="130" height="32" backcolor="#69BD56" uuid="abae8427-63b6-4e03-9670-661bd84df983"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Distance (KM)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1340" y="0" width="130" height="32" backcolor="#69BD56" uuid="a63bbf53-7984-43eb-ba38-785a51b4eae3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Max Speed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1470" y="0" width="130" height="32" backcolor="#69BD56" uuid="b3bf9703-8323-4e18-b9de-90b35a1bf52a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Average Speed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1600" y="0" width="130" height="32" backcolor="#69BD56" uuid="3e441583-051c-4a65-948f-6a610a0b3cf6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Last Odometer (KM)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1730" y="0" width="130" height="32" backcolor="#69BD56" uuid="655740f9-86e1-4ca2-873f-1d62ecfa03f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Trip]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1860" y="0" width="130" height="32" backcolor="#69BD56" uuid="7e209b36-3e51-4822-8eda-a09330c566e2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NDP Violation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="1990" y="0" width="130" height="32" backcolor="#69BD56" uuid="57c1654f-5c0d-4ca3-9583-969e3da87de0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fatigue Violation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="2120" y="0" width="130" height="32" backcolor="#69BD56" uuid="1919c1ad-ecd7-4217-a0ab-3f641a4dce71"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Overspeed Violation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="2250" y="0" width="130" height="32" backcolor="#69BD56" uuid="2ab7aea5-a2be-4c29-8666-c300b29e47fb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Score]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="290" y="0" width="140" height="32" backcolor="#69BD56" uuid="1083abf7-edf3-4b9f-833c-73d4d7db31b3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Area]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Coloumn Header" x="820" y="0" width="130" height="32" backcolor="#69BD56" uuid="54214664-7b73-4bac-9761-8761d9342ade"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address Trip To]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="Coloumn Detail" x="1470" y="0" width="130" height="15" uuid="bd15087a-1fd9-4131-b328-9db729c92fad"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{avg_speed}!=null?$F{avg_speed}:"0"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Coloumn Detail" x="1210" y="0" width="130" height="15" uuid="2da07b45-b3d6-47b6-a877-5c1b64074785"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[!$F{distance}.isEmpty()?$F{distance}:"-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Coloumn Detail" x="30" y="0" width="130" height="15" uuid="397003e6-948a-4d2e-aa86-b23983839fde"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{plate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Coloumn Detail" x="430" y="0" width="130" height="15" uuid="2e39054a-4db3-42ae-80f3-34bd041c6b50"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{driver}!=null?$F{driver}:'-']]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Coloumn Detail" x="0" y="0" width="30" height="15" uuid="0e593ee2-37fc-48b7-b43f-46906df7903e"/>
+				<textElement textAlignment="Center">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}.intValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Coloumn Detail" x="160" y="0" width="130" height="15" uuid="187caf5b-e98d-4b33-acc2-775d0bbd29c7"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{vehicle_type}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Coloumn Detail" x="560" y="0" width="130" height="15" uuid="6147aa92-4b5e-44cf-80f0-cd2377025aff"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{trip_from}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="Coloumn Detail" x="690" y="0" width="130" height="15" uuid="49705b48-29f5-4b59-a962-ce994bd0b5fa"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{start_trip}!=null?$F{start_trip}:"-"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="Coloumn Detail" x="950" y="0" width="130" height="15" uuid="c1eb340f-915d-4043-a446-d42c5ed3a0c6"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{end_trip}!=null?$F{end_trip}:"-"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="Coloumn Detail" x="1080" y="0" width="130" height="15" uuid="eabb014f-b65a-4840-96e9-616354236b07"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[!$F{duration}.isEmpty()?$F{duration}:"-"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="Coloumn Detail" x="1340" y="0" width="130" height="15" uuid="65389af3-e492-45ab-980f-cf547d55c976"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{max_speed}!=null?$F{max_speed}:"0"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement style="Coloumn Detail" x="1600" y="0" width="130" height="15" uuid="b4414365-80dd-41ef-a74e-8388d1c5aec2"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{last_odometer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement style="Coloumn Detail" x="1730" y="0" width="130" height="15" uuid="b4a5e85d-ab3a-4f3e-b157-af90f0e41a7d"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["1"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="Coloumn Detail" x="1860" y="0" width="130" height="15" uuid="2c6b4eb3-8f11-4be6-9725-3d27cbe3c5fd"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{ndp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="Coloumn Detail" x="1990" y="0" width="130" height="15" uuid="3f30715a-54a5-48a0-8e82-0172d7822e6d"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fatigue}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="Coloumn Detail" x="2120" y="0" width="130" height="15" uuid="d7e5ad5e-0fa4-4fc3-b8e4-7ef5e6fe8d6c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{overspeed}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="Coloumn Detail" x="2250" y="0" width="130" height="15" uuid="6423bc2d-b622-4b74-af9c-ed95d8a879c3"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{total_score}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Coloumn Detail" x="290" y="0" width="140" height="15" uuid="d7e080eb-8e73-459d-ac3f-bca56df238f3"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Coloumn Detail" x="820" y="0" width="130" height="15" uuid="bffd6403-f09e-4d1d-a93d-f9701b88a726"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{trip_to}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
